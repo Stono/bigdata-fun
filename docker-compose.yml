@@ -1,0 +1,23 @@
+version: '2'
+
+networks:
+  hbase:
+
+services:
+  hbase:
+    hostname: hbase
+    build: ./hbase
+    restart: always
+    networks:
+      hbase:
+    volumes:
+      - ./data/hbase:/data
+    ports:
+      - 8080:8080   # Rest
+      - 9090:9090   # Thrift API
+      - 9095:9095   # Thrift UI
+      - 16000:16000 # Master API
+      - 16010:16010 # Master UI
+      - 2181:2181   # Master Zookeeper
+      - 16020:16020 # Region API
+      - 16030:16030 # Region UI
