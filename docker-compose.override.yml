@@ -6,3 +6,12 @@ services:
 
   hue:
     build: ./hue
+
+  namenode:
+    build: ./namenode
+
+  datanode1:
+    build: ./datanode
+
+  datanode1:
+    build: ./datanode
