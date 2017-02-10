@@ -6,6 +6,7 @@ networks:
 services:
   hbase:
     hostname: hbase
+    domainname: hadoop
     build: ./hbase
     restart: always
     networks:
@@ -13,8 +14,10 @@ services:
     environment:
       - HBASE_MANAGES_ZK=true
       - QUORUM=hbase
-#    volumes:
-#      - ./data/hbase:/data
+    depends_on:
+      - namenode
+      - datanode1
+      - datanode2
     ports:
       - 8080:8080   # Rest
       - 9090:9090   # Thrift API
@@ -25,6 +28,18 @@ services:
       - 16020:16020 # Region API
       - 16030:16030 # Region UI
 
+  hue:
+    image: gethue/hue:latest 
+    hostname: hue
+    container_name: hue
+    domainname: hadoop
+    depends_on:
+      - hbase
+    networks:
+      - hbase
+    ports:
+      - 8088:8088
+       
   namenode:
     image: bde2020/hadoop-namenode:1.0.0
     hostname: namenode
@@ -32,8 +47,6 @@ services:
     domainname: hadoop
     networks:
       - hbase
-#    volumes:
-#      - ./data/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     depends_on:
@@ -52,8 +65,6 @@ services:
     domainname: hadoop
     networks:
       - hbase
-#    volumes:
-#      - ./data/datanode1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
@@ -64,22 +75,6 @@ services:
     domainname: hadoop
     networks: 
       - hbase
-#    volumes:
-#      - ./data/datanode2:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
-
-  hue:
-    image: bde2020/hdfs-filebrowser:3.9
-    hostname: hdfsfb
-    container_name: hdfsfb
-    domainname: hadoop
-    networks:
-      - hbase
-    environment:
-      - NAMENODE_HOST=namenode
-    depends_on: 
-      - namenode
-    ports:
-      - 8088:8088
 
