@@ -1,0 +1,19 @@
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+     <name>hbase.zookeeper.quorum</name>
+     <value>QUORUM</value>
+  </property>
+  <property>
+    <name>hbase.master.info.bindAddress</name>
+    <value>HOSTNAME</value>
+  </property>
+  <property>
+    <name>hbase.regionserver.info.bindAddress</name>
+    <value>HOSTNAME</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>file:////data</value>
+  </property>
+</configuration>

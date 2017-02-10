@@ -43,7 +43,8 @@ EXPOSE 16020
 EXPOSE 16030
 
 # Config files
-COPY config/hbase-site.xml /opt/hbase/conf/hbase-site.xml
+COPY config/hbase-site.hdfs.xml /opt/hbase/conf/hbase-site.hdfs.xml
+COPY config/hbase-site.local.xml /opt/hbase/conf/hbase-site.local.xml
 COPY config/supervisord.conf /etc/supervisord.conf
 
 # Services
