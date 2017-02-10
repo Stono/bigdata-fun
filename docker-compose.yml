@@ -10,14 +10,76 @@ services:
     restart: always
     networks:
       hbase:
-    volumes:
-      - ./data/hbase:/data
+    environment:
+      - HBASE_MANAGES_ZK=true
+      - QUORUM=hbase
+#    volumes:
+#      - ./data/hbase:/data
     ports:
       - 8080:8080   # Rest
       - 9090:9090   # Thrift API
       - 9095:9095   # Thrift UI
+      - 2181:2181   # Zookeeper 
       - 16000:16000 # Master API
       - 16010:16010 # Master UI
-      - 2181:2181   # Master Zookeeper
       - 16020:16020 # Region API
       - 16030:16030 # Region UI
+
+  namenode:
+    image: bde2020/hadoop-namenode:1.0.0
+    hostname: namenode
+    container_name: namenode
+    domainname: hadoop
+    networks:
+      - hbase
+#    volumes:
+#      - ./data/namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    depends_on:
+      - datanode1
+      - datanode2
+    env_file:
+      - ./hadoop.env
+    ports:
+      - 50070:50070
+      - 8020:8020
+
+  datanode1:
+    image: bde2020/hadoop-datanode:1.0.0
+    hostname: datanode1
+    container_name: datanode1
+    domainname: hadoop
+    networks:
+      - hbase
+#    volumes:
+#      - ./data/datanode1:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  datanode2:
+    image: bde2020/hadoop-datanode:1.0.0
+    hostname: datanode2
+    container_name: datanode2
+    domainname: hadoop
+    networks: 
+      - hbase
+#    volumes:
+#      - ./data/datanode2:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  hue:
+    image: bde2020/hdfs-filebrowser:3.9
+    hostname: hdfsfb
+    container_name: hdfsfb
+    domainname: hadoop
+    networks:
+      - hbase
+    environment:
+      - NAMENODE_HOST=namenode
+    depends_on: 
+      - namenode
+    ports:
+      - 8088:8088
+

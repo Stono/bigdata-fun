@@ -2,18 +2,22 @@
 <configuration>
   <property>
      <name>hbase.zookeeper.quorum</name>
-     <value>hbase</value>
-  </property>
-  <property>
-    <name>hbase.rootdir</name>
-    <value>file:////data</value>
+     <value>QUORUM</value>
   </property>
   <property>
     <name>hbase.master.info.bindAddress</name>
-    <value>hbase</value>
+    <value>HOSTNAME</value>
   </property>
   <property>
     <name>hbase.regionserver.info.bindAddress</name>
-    <value>hbase</value>
+    <value>HOSTNAME</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://namenode:8020/hbase</value>
+  </property>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
   </property>
 </configuration>
