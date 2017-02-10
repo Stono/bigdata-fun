@@ -3,3 +3,6 @@ version: '2'
 services:
   hbase:
     build: ./hbase
+
+  hue:
+    build: ./hue

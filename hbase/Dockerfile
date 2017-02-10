@@ -7,9 +7,13 @@ VOLUME /data
 ENV TERM xterm-256color
 ENV HBASE_VERSION 1.3.0
 ENV HBASE_DIST http://mirrors.ukfast.co.uk/sites/ftp.apache.org/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-bin.tar.gz   
-ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk
-ENV PATH=$PATH:/opt/hbase/bin
-ENV HBASE_MANAGES_ZK=true
+ENV HBASE_MANAGES_ZK true
+ENV USE_HDFS true
+ENV PATH $PATH:/opt/hbase/bin
+
+ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk
+ENV JAVA_OPTS "-Xms2g -Xmx4g -XX:MaxPermSize=2048m"
+ENV HBASE_HEAPSIZE 2048
 
 # Get dependencies
 RUN yum -y -q install curl wget java-1.8.0-openjdk-headless

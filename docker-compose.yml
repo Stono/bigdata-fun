@@ -5,17 +5,12 @@ networks:
 
 services:
   hbase:
-    hostname: hbase
     image: hbase
+    hostname: hbase
+    container_name: hbase
     restart: always
     networks:
       hbase:
-    environment:
-      - HBASE_MANAGES_ZK=true
-      - HBASE_HEAPSIZE=2048
-      - QUORUM=hbase
-      - USE_HDFS=true
-      - JAVA_OPTS=-Xms2g -Xmx4g -XX:MaxPermSize=2048m
     depends_on:
       - namenode
       - datanode1
@@ -29,14 +24,17 @@ services:
       - 16010:16010 # Master UI
       - 16020:16020 # Region API
       - 16030:16030 # Region UI
+    environment:
+      - QUORUM=hbase
 
   hue:
-    build: ./hue 
+    image: hue
     hostname: hue
     container_name: hue
-    depends_on:
-      - hbase
+    restart: always
     networks:
+      - hbase
+    depends_on:
       - hbase
     ports:
       - 8888:8888
@@ -47,16 +45,16 @@ services:
     container_name: namenode
     networks:
       - hbase
-    environment:
-      - CLUSTER_NAME=test
     depends_on:
       - datanode1
       - datanode2
-    env_file:
-      - ./hadoop.env
     ports:
       - 50070:50070
       - 8020:8020
+    env_file:
+      - ./hadoop.env
+    environment:
+      - CLUSTER_NAME=test
 
   datanode1:
     image: bde2020/hadoop-datanode:1.0.0
