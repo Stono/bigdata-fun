@@ -7,7 +7,7 @@ services:
   hbase:
     hostname: hbase
     domainname: hadoop
-    build: ./hbase
+    image: hbase
     restart: always
     networks:
       hbase:
@@ -29,7 +29,7 @@ services:
       - 16030:16030 # Region UI
 
   hue:
-    image: gethue/hue:latest 
+    build: ./hue 
     hostname: hue
     container_name: hue
     domainname: hadoop
@@ -38,7 +38,7 @@ services:
     networks:
       - hbase
     ports:
-      - 8088:8088
+      - 8888:8888
        
   namenode:
     image: bde2020/hadoop-namenode:1.0.0
@@ -77,4 +77,3 @@ services:
       - hbase
     env_file:
       - ./hadoop.env
-
