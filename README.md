@@ -26,3 +26,14 @@ Give it a minute to get its ducks in line, and then access the key things you'll
 - Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 - HBase Master UI: [http://127.0.0.1:16010](http://127.0.0.1:16010)
 - HBase Region UI: [http://127.0.0.1:16030](http://127.0.0.1:16030)
+
+## Hue
+When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
+
+## Credit
+The HDFS work has been tackled beautifully by [https://github.com/big-data-europe/docker-hadoop](https://github.com/big-data-europe/docker-hadoop), so I'm using it for namenode, and datanodes.
+
+## TODO
+- Solr
+- Spark
+- Migrate namenode, datanode and hue to my own build on centos base, like HBase.
