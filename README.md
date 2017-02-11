@@ -80,7 +80,7 @@ The HBase container can be run in standalone mode too, if you want - which will 
 
 You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
 
-![HBase](hbase.jpg)
+![HBase](HBase.png)
 
 #### Rest/Thrift
 
@@ -89,7 +89,7 @@ You can read more about the modes [here](http://hbase.apache.org/0.94/book/stand
 
 The rest & thrift interfaces sit on top of the cluster, you can stop them if you don't need them.
 
-![Rest/Thrift](thrift.png)
+![Rest/Thrift](rest.png)
 
 ### Hue (latest)
  
