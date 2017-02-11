@@ -7,6 +7,8 @@ ENV HBASE_MANAGES_ZK true
 ENV USE_HDFS true
 ENV PATH $PATH:/opt/hbase/bin
 ENV HBASE_HEAPSIZE 2048
+ENV HBASE_CONF_DISTRIBUTED true
+ENV HBASE_MANAGES_ZK false
 
 # Download and install HBase
 RUN cd /opt && \
@@ -14,13 +16,6 @@ RUN cd /opt && \
 	tar xzf hbase-* && \
 	rm -f *.tar.gz && \
 	mv hbase-* hbase
-
-# Supervisor
-RUN yum install -y -q python-setuptools && \
-	easy_install -q supervisor supervisor-stdout && \
-    mkdir -p /etc/supervisord.d && \
-    mkdir -p /var/log/supervisord && \
-    mkdir -p /var/run 
 
 # Ports: Rest
 EXPOSE 8080
@@ -36,14 +31,10 @@ EXPOSE 2181
 EXPOSE 16020
 EXPOSE 16030
 
-# Config files
-COPY config/hbase-site.hdfs.xml /opt/hbase/conf/hbase-site.hdfs.xml
-COPY config/hbase-site.local.xml /opt/hbase/conf/hbase-site.local.xml
-COPY config/supervisord.conf /etc/supervisord.conf
+RUN yum -y -q install gettext
 
-# Services
-COPY services/* /etc/supervisord.d/
+# Config files
+COPY config/hbase-site.xml /opt/hbase/conf/hbase-site.template
 
 COPY start.sh /usr/local/bin/start.sh
 ENTRYPOINT ["/usr/local/bin/start.sh"]
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]

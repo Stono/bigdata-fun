@@ -3,18 +3,30 @@ set -e
 HOSTNAME=$(hostname)
 QUORUM=${QUORUM:-$HOSTNAME}
 
-if [ "$USE_HDFS" = "true" ]; then
-  cp /opt/hbase/conf/hbase-site.hdfs.xml /opt/hbase/conf/hbase-site.xml
-else
-  rm /etc/supervisord.d/zookeeper.service.conf
-  rm /etc/supervisord.d/regionserver.service.conf
-  cp /opt/hbase/conf/hbase-site.local.xml /opt/hbase/conf/hbase-site.xml
-fi
+echo "Configuring hbase-site.xml..."
+for varname in ${!HBASE_CONF_*}
+do
+	KEY=${varname}
+	VALUE=${!varname}
 
-rm /opt/hbase/conf/hbase-site.local.xml
-rm /opt/hbase/conf/hbase-site.hdfs.xml
+	echo "  -> KEY: $KEY"
+	echo "  -> VALUE: $VALUE"
+	echo ""
 
-sed -i "s/HOSTNAME/$HOSTNAME/g" /opt/hbase/conf/hbase-site.xml
-sed -i "s/QUORUM/$QUORUM/g" /opt/hbase/conf/hbase-site.xml
+	envsubst < /opt/hbase/conf/hbase-site.template > /opt/hbase/conf/hbase-site.xml
+done
+
+echo "Configuring host file..."
+for varname in ${!HOST_ENTRY_*}
+do
+	KEY=${varname}
+	VALUE=${!varname}
+	IP=$(getent hosts $VALUE | cut -d' ' -f1)
+	
+	echo "  -> $IP $VALUE"
+
+	echo "$IP $VALUE" >> /etc/hosts
+done
+
 
 $* 

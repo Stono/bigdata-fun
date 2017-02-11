@@ -1,9 +1,11 @@
 version: '2'
 
-networks:
-  hbase:
-
 services:
+  # This is a bit of a hacky way to do container build inheritance.
+  # Basically jvm, hadoop and hbase never actually run.
+  # They just return true, but they'll be built first and their image
+  # is used in the other containers Dockerfiles
+
   jvm:
     image: karlstoney/jvm
     container_name: buildonly-jvm
@@ -13,40 +15,110 @@ services:
     container_name: buildonly-hadoop
     depends_on:
       - jvm
- 
+
   hbase:
     image: karlstoney/hbase
-    hostname: hbase
-    container_name: hbase
-    restart: always
-    networks:
-      hbase:
-    depends_on:
+    container_name: buildonly-hbase
+    depends_on: 
       - jvm
+
+  hbase_zookeeper:
+    image: karlstoney/hbase
+    hostname: hbase-zookeeper
+    container_name: hbase-zookeeper
+    restart: always
+    command: hbase zookeeper start
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+    ports:
+      - 2181:2181
+    depends_on:
+      - hbase
+
+  hbase_master:
+    image: karlstoney/hbase
+    hostname: hbase-master
+    container_name: hbase-master
+    restart: always
+    command: hbase master start
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+      # docker-compose networking is flakey, I've added a script
+      # which does DNS looking for any HOST_ENTRY_* ENV variables
+      # and adds it to the hostfile for the container, thus bypassing 
+      # the DNS lookup which adds the project network name
+      - HOST_ENTRY_1=hbase-regionserver
+    ports:
+      - 16000:16000
+      - 16010:16010 
+    depends_on:
+      - hbase
+      - hbase_zookeeper
       - namenode
       - datanode1
       - datanode2
-    ports:
-      - 8080:8080   # Rest
-      - 9090:9090   # Thrift API
-      - 9095:9095   # Thrift UI
-      - 2181:2181   # Zookeeper 
-      - 16000:16000 # Master API
-      - 16010:16010 # Master UI
-      - 16020:16020 # Region API
-      - 16030:16030 # Region UI
+      - hbase_regionserver
+
+  hbase_regionserver:
+    image: karlstoney/hbase
+    hostname: hbase-regionserver
+    container_name: hbase-regionserver
+    restart: always
+    command: hbase regionserver start
     environment:
-      - QUORUM=hbase
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 16020:16020
+      - 16030:16030 
+    depends_on:
+      - hbase
+      - namenode
+      - datanode1
+      - datanode2
+
+  hbase_thrift:
+    image: karlstoney/hbase
+    hostname: hbase-thrift
+    container_name: hbase-thrift
+    restart: always
+    command: hbase thrift start -t 5000 -p 9090
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 9090:9090   # API
+      - 9095:9095   # UI
+    depends_on:
+      - hbase
+      - hbase_master
+
+  hbase_rest:
+    image: karlstoney/hbase
+    hostname: hbase-rest
+    container_name: hbase-rest
+    restart: always
+    command: hbase rest start 
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 8080:8080   # API
+    depends_on:
+      - hbase
+      - hbase_master
 
   hue:
     image: karlstoney/hue
     hostname: hue
     container_name: hue
     restart: always
-    networks:
-      - hbase
     depends_on:
-      - hbase
+      - hbase_master
+      - hbase_regionserver
+      - hbase_thrift
+      - hbase_zookeeper
     ports:
       - 8888:8888
        
@@ -54,8 +126,6 @@ services:
     image: karlstoney/namenode 
     hostname: namenode
     container_name: namenode
-    networks:
-      - hbase
     depends_on:
       - hadoop
     ports:
@@ -70,8 +140,6 @@ services:
     image: karlstoney/datanode 
     hostname: datanode1
     container_name: datanode1
-    networks:
-      - hbase
     depends_on:
       - namenode
       - hadoop
@@ -82,8 +150,6 @@ services:
     image: karlstoney/datanode 
     hostname: datanode2
     container_name: datanode2
-    networks: 
-      - hbase
     depends_on:
       - namenode
       - hadoop

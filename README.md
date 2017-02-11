@@ -30,12 +30,29 @@ Give it a minute to get its ducks in line, and then access the key things you'll
 ## The components in detail
 
 ### HDFS (namenode, datanodes x2)
-This is a HDFS cluster running two datanodes.
+This is a HDFS cluster running two datanodes.  Each of these run in their own container too:
+
+ - namenode
+ - datanode1
+ - datanode2
 
 ### HBase
-The docker-compose file is configured to run in Distributed mode, ie to target a HBase distributed cluster.  If you prefer, you can run it in standalone mode, which means you don't need the HDFS components at all, and it'll be a bit more performant, but that wasn't the purpose of this setup.  You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
+This setup is designed to replicate a fully distributed setup, subsequently we're running in distributed mode and running separate instances (containers) of the following:
 
-To run HBase in standalone mode, run the HBase container with `USE_HDFS=false`.
+ - hbase_zookeeper
+ - hbase_master
+ - hbase_regionserver
+ - hbase_thrift
+ - hbase_rest
+
+The HBase container can be run in standalone mode too, if you want - which will result in less JVMs, but a less production like environment.  To run HBase in standalone mode, run the HBase container with `HBASE_MANAGES_ZK=true`, `HBASE_CONF_DISTRIBUTED=false` and `HBASE_CONF_QUORUM=hbase-master`.
+
+You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
+
+#### Rest/Thrift
+The rest & thrift interfaces sit on top of the cluster, you can stop them if you don't need them.
+
+![Rest/Thrift](thrift.png)
 
 ### Hue
 When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
