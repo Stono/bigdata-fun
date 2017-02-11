@@ -28,5 +28,4 @@ do
 	echo "$IP $VALUE" >> /etc/hosts
 done
 
-
 $* 

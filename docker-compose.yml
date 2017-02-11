@@ -22,6 +22,19 @@ services:
     depends_on: 
       - jvm
 
+  flume: 
+    image: karlstoney/flume
+    hostname: flume
+    container_name: flume
+    restart: always
+    volumes:
+      - ./config/flume:/opt/flume/conf
+      - ./data/flume:/data
+    environment:
+      - FLUME_AGENT_NAME=agent
+    depends_on:
+      - namenode
+
   hbase_zookeeper:
     image: karlstoney/hbase
     hostname: hbase-zookeeper
@@ -118,6 +131,7 @@ services:
       - hbase_master
       - hbase_regionserver
       - hbase_thrift
+      - hbase_rest
       - hbase_zookeeper
     ports:
       - 8888:8888

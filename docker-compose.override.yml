@@ -9,6 +9,9 @@ services:
 
   hbase:
     build: ./hbase
+  
+  flume:
+    build: ./flume
 
   hue:
     build: ./hue

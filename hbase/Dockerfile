@@ -9,6 +9,7 @@ ENV PATH $PATH:/opt/hbase/bin
 ENV HBASE_HEAPSIZE 2048
 ENV HBASE_CONF_DISTRIBUTED true
 ENV HBASE_MANAGES_ZK false
+ENV HBASE_HOME /opt/hbase
 
 # Download and install HBase
 RUN cd /opt && \
