@@ -22,5 +22,5 @@ services:
   datanode1:
     build: ./datanode
 
-  datanode1:
+  datanode2:
     build: ./datanode
