@@ -4,6 +4,9 @@ services:
   jvm:
     build: ./jvm
 
+  hadoop:
+    build: ./hadoop
+
   hbase:
     build: ./hbase
 

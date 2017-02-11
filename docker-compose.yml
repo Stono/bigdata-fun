@@ -6,6 +6,13 @@ networks:
 services:
   jvm:
     image: karlstoney/jvm
+    container_name: buildonly/jvm
+
+  hadoop:
+    image: karlstoney/hadoop
+    container_name: buildonly/hadoop
+    depends_on:
+      - jvm
  
   hbase:
     image: karlstoney/hbase
@@ -50,6 +57,7 @@ services:
     networks:
       - hbase
     depends_on:
+      - hadoop
       - datanode1
       - datanode2
     ports:
