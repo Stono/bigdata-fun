@@ -16,9 +16,13 @@ The following components will be coming soon:
 - [Spark](http://spark.apache.org/) - Data processing engine
 
 ## Getting started
-Oh the joy, it's so easy.
+Oh the joy, it's so easy.  Just make sure you have docker installed, and docker-compose.  Be aware that I do use v2 networking, so make sure you're up to date.  I built all of this on the following versions of things:
 
-`docker-compose up`
+```
+
+```
+
+To get started, run: `docker-compose up`
 
 Give it a minute to get its ducks in line, and then access the key things you'll be interested in:
 
@@ -36,7 +40,9 @@ Give it a minute to get its ducks in line, and then access the key things you'll
  - datanode1
  - datanode2
 
-This is a HDFS cluster running two datanodes.  Each of these run in their own container too:
+This is a HDFS cluster running two datanodes.  Each of these run in their own container too.
+
+![HDFS](hdfs.png)
 
 ### HBase (1.3.0)
 
@@ -50,7 +56,7 @@ The HBase container can be run in standalone mode too, if you want - which will 
 
 You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
 
-![HDFS](hdfs.jpg)
+![HBase](hbase.jpg)
 
 #### Rest/Thrift
 
@@ -74,6 +80,28 @@ When you first use Hue, it does a health check and will tell you that a bunch of
 
 I wanted a way to stream data into Hadoop or HBase easily.  That's what this container does.  It includes the java classes for hbase and hadoop too so those sinks will work.  By default, docker-compose will mount `./data/flume`, and any files you place in there will be 'flumed' into a HBase table called `flume_sink`, with the column family `cf`.  That's all config driven though so edit `./config/flume/flume-conf.properties` to change that behaviour.  
   
+In order for the HBase aspect to work, you need to create the table first, that's easiest via the hbase shell.
+
+```
+$ docker-compose exec hbase_master hbase shell
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.3.0, re359c76e8d9fd0d67396456f92bcbad9ecd7a710, Tue Jan  3 05:31:38 MSK 2017
+
+hbase(main):001:0> create 'flume_sink', 'cf'
+0 row(s) in 2.5370 seconds
+
+=> Hbase::Table - flume_sink
+hbase(main):002:0>
+```
+
+If you've started flume before creating this table, you'll be seeing errors like this:
+```
+org.apache.flume.FlumeException: Error getting column family from HBase.Please verify that the table flume_sink and Column Family, cf exists in HBase, and the current user has permissions to access that table.
+```
+
+Simply do a `docker-compose restart flume` and it'll sort itself out.
+
 ![Flume](flume.png)
 
 ## Credits

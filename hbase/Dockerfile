@@ -1,22 +1,24 @@
 FROM karlstoney/jvm:latest 
 
+RUN yum -y -q install gettext
+
 # Setup environment
-ENV HBASE_VERSION 1.3.0
-ENV HBASE_DIST http://mirrors.ukfast.co.uk/sites/ftp.apache.org/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-bin.tar.gz   
 ENV HBASE_MANAGES_ZK true
-ENV USE_HDFS true
 ENV PATH $PATH:/opt/hbase/bin
 ENV HBASE_HEAPSIZE 2048
 ENV HBASE_CONF_DISTRIBUTED true
 ENV HBASE_MANAGES_ZK false
 ENV HBASE_HOME /opt/hbase
+ENV PATH $HBASE_HOME/bin/:$PATH
 
-# Download and install HBase
-RUN cd /opt && \
-	wget --quiet $HBASE_DIST && \
-	tar xzf hbase-* && \
-	rm -f *.tar.gz && \
-	mv hbase-* hbase
+# Get HBase 
+ENV HBASE_VERSION 1.3.0
+ENV HBASE_DIST http://mirrors.ukfast.co.uk/sites/ftp.apache.org/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-bin.tar.gz   
+
+RUN curl --silent -fSL "$HBASE_DIST" -o /tmp/hbase.tar.gz && \
+    tar -xf /tmp/hbase.tar.gz -C /opt/ && \
+    rm -f /tmp/hbase.tar.gz && \
+    mv /opt/hbase-* $HBASE_HOME 
 
 # Ports: Rest
 EXPOSE 8080
@@ -31,8 +33,6 @@ EXPOSE 16010
 EXPOSE 2181
 EXPOSE 16020
 EXPOSE 16030
-
-RUN yum -y -q install gettext
 
 # Config files
 COPY config/hbase-site.xml /opt/hbase/conf/hbase-site.template

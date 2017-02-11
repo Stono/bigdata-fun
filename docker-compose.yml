@@ -33,7 +33,9 @@ services:
     environment:
       - FLUME_AGENT_NAME=agent
     depends_on:
+      - jvm
       - namenode
+      - hbase_zookeeper
 
   hbase_zookeeper:
     image: karlstoney/hbase
