@@ -9,5 +9,5 @@ VOLUME /hadoop/dfs/name
 
 EXPOSE 50070
 
-ADD run.sh /run.sh
-CMD ["/run.sh"]
+ADD run.sh /usr/local/bin/run.sh
+CMD ["/usr/local/bin/run.sh"]

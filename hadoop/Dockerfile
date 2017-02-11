@@ -20,5 +20,5 @@ RUN cp /etc/hadoop/mapred-site.xml.template /etc/hadoop/mapred-site.xml
 
 RUN yum -y -q install perl which
 
-ADD entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
