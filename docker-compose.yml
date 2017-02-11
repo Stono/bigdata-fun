@@ -4,14 +4,18 @@ networks:
   hbase:
 
 services:
+  jvm:
+    image: karlstoney/jvm
+ 
   hbase:
-    image: hbase
+    image: karlstoney/hbase
     hostname: hbase
     container_name: hbase
     restart: always
     networks:
       hbase:
     depends_on:
+      - jvm
       - namenode
       - datanode1
       - datanode2
@@ -28,7 +32,7 @@ services:
       - QUORUM=hbase
 
   hue:
-    image: hue
+    image: karlstoney/hue
     hostname: hue
     container_name: hue
     restart: always
@@ -40,7 +44,7 @@ services:
       - 8888:8888
        
   namenode:
-    image: namenode 
+    image: karlstoney/namenode 
     hostname: namenode
     container_name: namenode
     networks:
@@ -57,16 +61,18 @@ services:
       - CLUSTER_NAME=test
 
   datanode1:
-    image: datanode 
+    image: karlstoney/datanode 
     hostname: datanode1
     container_name: datanode1
     networks:
       - hbase
+    depends_on:
+      - jvm
     env_file:
       - ./hadoop.env
 
   datanode2:
-    image: datanode 
+    image: karlstoney/datanode 
     hostname: datanode2
     container_name: datanode2
     networks: 

@@ -1,6 +1,9 @@
 version: '2'
 
 services:
+  jvm:
+    build: ./jvm
+
   hbase:
     build: ./hbase
 
