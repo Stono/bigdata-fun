@@ -29,7 +29,7 @@ Give it a minute to get its ducks in line, and then access the key things you'll
 
 ## The components in detail
 
-### HDFS (namenode, datanodes x2)
+### HDFS 
 This is a HDFS cluster running two datanodes.  Each of these run in their own container too:
 
  - namenode
@@ -52,10 +52,15 @@ You can read more about the modes [here](http://hbase.apache.org/0.94/book/stand
 #### Rest/Thrift
 The rest & thrift interfaces sit on top of the cluster, you can stop them if you don't need them.
 
+ - hbase_thrift
+ - hbase_rest
+
 ![Rest/Thrift](thrift.png)
 
 ### Hue
 When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
+
+ - hue
 
 ## Credits
  - The HDFS work has been tackled beautifully by [https://github.com/big-data-europe/docker-hadoop](https://github.com/big-data-europe/docker-hadoop), so I'm using a lot of what they did for the hadoop namenodes and datanodes.
