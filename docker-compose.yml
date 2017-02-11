@@ -6,11 +6,11 @@ networks:
 services:
   jvm:
     image: karlstoney/jvm
-    container_name: buildonly/jvm
+    container_name: buildonly-jvm
 
   hadoop:
     image: karlstoney/hadoop
-    container_name: buildonly/hadoop
+    container_name: buildonly-hadoop
     depends_on:
       - jvm
  
@@ -75,7 +75,7 @@ services:
     networks:
       - hbase
     depends_on:
-      - jvm
+      - hadoop
     env_file:
       - ./hadoop.env
 
@@ -85,5 +85,7 @@ services:
     container_name: datanode2
     networks: 
       - hbase
+    depends_on:
+      - hadoop
     env_file:
       - ./hadoop.env

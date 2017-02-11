@@ -41,10 +41,9 @@ To run HBase in standalone mode, run the HBase container with `USE_HDFS=false`.
 When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
 
 ## Credits
- - The HDFS work has been tackled beautifully by [https://github.com/big-data-europe/docker-hadoop](https://github.com/big-data-europe/docker-hadoop), so I'm using it for namenode, and datanodes.
+ - The HDFS work has been tackled beautifully by [https://github.com/big-data-europe/docker-hadoop](https://github.com/big-data-europe/docker-hadoop), so I'm using a lot of what they did for the hadoop namenodes and datanodes.
  - Also, at the moment, i'm using the [Hue](https://github.com/cloudera/hue) container.
 
 ## TODO
 - Solr
 - Spark
-- Migrate namenode, datanode and hue to my own build on centos base, like HBase.
