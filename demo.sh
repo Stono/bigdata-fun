@@ -22,7 +22,7 @@ echo Starting Hue...
 docker-compose up -d hue
 
 echo Creating Users table in HBase...
-docker-compose exec hbase_master /bin/sh -c "echo \"create 'User', { NAME => 'cf', REPLICATION_SCOPE => '1' }\" | hbase shell"
+docker-compose exec hbase_master /bin/sh -c "echo \"create 'Users', { NAME => 'cf', REPLICATION_SCOPE => '1' }\" | hbase shell"
 
 export WEB="http://127.0.0.1:8082/nifi"
 export API="http://127.0.0.1:8082/nifi-api"
