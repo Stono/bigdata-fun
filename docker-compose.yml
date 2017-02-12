@@ -181,6 +181,7 @@ services:
 
   nifi:
     image: karlstoney/nifi
+    restart: always
     hostname: nifi
     container_name: nifi
     ports:
