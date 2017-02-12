@@ -12,7 +12,7 @@ The key components currently implemented are:
 - [Flume](https://flume.apache.org/) - A headless way to process and distribute data
 - [HBase Indexer](http://ngdata.github.io/hbase-indexer/) - HBase Indexer allows you to easily and quickly index HBase rows into Solr. 
 - [Solr](http://lucene.apache.org/solr/) - Search platform based on Lucene
-- [Banana](https://github.com/lucidworks/banana) - A kibana port for Solr
+- [Banana](https://github.com/lucidworks/banana) - A kibana port for visualisation of Solr data
 
 The following components will be coming soon:
 
@@ -28,6 +28,7 @@ Whichever method you use, give it a minute to get its ducks in line, and then ac
 - Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
 - Solr UI: [http://127.0.0.1:8983](http://127.0.0.1:8983)
 - NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
+- Banana UI: [http://127.0.0.1:8000/src/index.html#/dashboard](http://127.0.0.1:8000)
 - HDFS NameNode UI: [http://127.0.0.1:50070](http://127.0.0.1:50070)
 - Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 - HBase Master UI: [http://127.0.0.1:16010](http://127.0.0.1:16010)
@@ -103,6 +104,15 @@ hbase(main):001:0> create 'Users', 'cf'
 After you've done that - start the process flows in NiFi and you'll see data being imported into HBase.  Easy as that!
 
 ![USers](images/users.png)
+
+### Banana (1.16.12)
+Banana is a Kibana port for Solr.  It's used to visulaise the data we're indexing.  I haven't done much with it yet other than semi get it running.  
+
+### HBase Indexer (Lily)
+HBase Indexer allows you to easily and quickly index HBase rows into Solr.  It links to the HBase replication agent, whenever data is modified in HBase those events are mutated and sent over to the Solr instance.
+
+### Solr (6.4.1)
+Search/Index platform based on Lucene.  If you're familiar with the ELK stack, this is the ElasticSearch component.
 
 ### Flume (1.7.0)
   
