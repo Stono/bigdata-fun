@@ -1,7 +1,7 @@
 # BigData Fun
-I wanted to learn more about big data, and some of the key tools in the market.
+This is the respository associated with my article, [Big Data, Little Cloud](https://karlstoney.com/2017/02/11/really-bigdata-really-small-cloud/).
 
-As a result, I decided to create an all in one docker environment, including distributed filesystem (HDFS).
+In summary, I wanted to learn more about big data, and some of the key tools in the market.  As a result, I decided to create an all in one docker environment, including distributed filesystem (HDFS).
 
 The key components are:
 
