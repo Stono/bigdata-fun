@@ -157,6 +157,15 @@ services:
     env_file:
       - ./hadoop.env
 
+  solr:
+    image: karlstoney/solr
+    hostname: solr
+    container_name: solr
+    ports:
+      - 8983:8983 # UI
+    depends_on:
+      - jvm
+
   nifi:
     image: karlstoney/nifi
     hostname: nifi

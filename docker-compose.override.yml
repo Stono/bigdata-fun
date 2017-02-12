@@ -12,7 +12,10 @@ services:
   
   flume:
     build: ./flume
- 
+  
+  solr:
+    build: ./solr
+
   nifi:
     build: ./nifi
 
