@@ -1,57 +1,32 @@
 # BigData Fun
 This is the respository associated with my article, [Big Data, Little Cloud](https://karlstoney.com/2017/02/11/really-bigdata-really-small-cloud/).
 
-In summary, I wanted to learn more about big data, and some of the key tools in the market.  As a result, I decided to create an all in one docker environment, including distributed filesystem (HDFS).
+In summary, I wanted to learn more about big data, and some of the key tools in the market.  As a result, I decided to create an all in one docker environment where I can test out all the bits.
 
-The key components are:
+The key components currently implemented are:
 
 - [HDFS](http://hortonworks.com/apache/hdfs) - Distributed file system, including two data nodes
 - [HBase](http://hortonworks.com/apache/hbase) - Non-relational, distributed database similar to Google BigTable
 - [Hue](http://gethue.com) - Web interface for analyzing data
 - [NiFi](https://nifi.apache.org) - A system to process and distribute data
 - [Flume](https://flume.apache.org/) - A headless way to process and distribute data
+- [HBase Indexer](http://ngdata.github.io/hbase-indexer/) - HBase Indexer allows you to easily and quickly index HBase rows into Solr. 
+- [Solr](http://lucene.apache.org/solr/) - Search platform based on Lucene
+- [Banana](https://github.com/lucidworks/banana) - A kibana port for Solr
 
 The following components will be coming soon:
 
-- [Solr](http://lucene.apache.org/solr/) - Search platform based on Lucene
 - [Spark](http://spark.apache.org/) - Data processing engine
 
 ## Getting started
-Oh the joy, it's so easy.  Just make sure you have docker installed, and docker-compose.  Be aware that I do use v2 networking, so make sure you're up to date.  I built all of this on the following versions of things:
+There are two ways to get started.  If you just want to start all the components just do `docker-compose up`.  You can then go and configure the bits together yourself.
 
-```
-$ docker version
-Client:
- Version:      1.13.1
- API version:  1.26
- Go version:   go1.7.5
- Git commit:   092cba3
- Built:        Wed Feb  8 08:47:51 2017
- OS/Arch:      darwin/amd64
+I am working on a complete end to end demo however, so if you prefer, just run `./demo.sh`.  The idea of this demo is to read in random user data from a sample API, import that into HBase, have the indexer then send that over to Solr so we can query it in Banana.
 
-Server:
- Version:      1.13.1
- API version:  1.26 (minimum version 1.12)
- Go version:   go1.7.5
- Git commit:   092cba3
- Built:        Wed Feb  8 08:47:51 2017
- OS/Arch:      linux/amd64
- Experimental: true
-
-
-$ docker-compose version
-docker-compose version 1.11.1, build 7c5d5e4
-docker-py version: 2.0.2
-CPython version: 2.7.12
-OpenSSL version: OpenSSL 1.0.2j  26 Sep 2016
-
-```
-
-To get started, run: `docker-compose up`
-
-Give it a minute to get its ducks in line, and then access the key things you'll be interested in:
+Whichever method you use, give it a minute to get its ducks in line, and then access the key things you'll be interested in:
 
 - Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
+- Solr UI: [http://127.0.0.1:8983](http://127.0.0.1:8983)
 - NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
 - HDFS NameNode UI: [http://127.0.0.1:50070](http://127.0.0.1:50070)
 - Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
@@ -68,7 +43,7 @@ Give it a minute to get its ducks in line, and then access the key things you'll
 
 This is a HDFS cluster running two datanodes.  Each of these run in their own container too.
 
-![HDFS](hdfs.png)
+![HDFS](images/hdfs.png)
 
 ### HBase (1.3.0)
 
@@ -82,7 +57,7 @@ The HBase container can be run in standalone mode too, if you want - which will 
 
 You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
 
-![HBase](HBase.png)
+![HBase](images/HBase.png)
 
 #### Rest/Thrift
 
@@ -91,7 +66,7 @@ You can read more about the modes [here](http://hbase.apache.org/0.94/book/stand
 
 The rest & thrift interfaces sit on top of the cluster, you can stop them if you don't need them.
 
-![Rest/Thrift](rest.png)
+![Rest/Thrift](images/rest.png)
 
 ### Hue (latest)
  
@@ -109,7 +84,7 @@ To get started, I reccomend using some templates from [Here](https://github.com/
 
 The only think you actually need to configure is the controller service `HBase_1_1_2_ClientService`.  Basically you need to point it at ZooKeeper so it can discover your HBase nodes.
 
-![NiFi](nifi.png)
+![NiFi](images/nifi.png)
 
 Oh, and create the table in HBase:
 
@@ -127,7 +102,7 @@ hbase(main):001:0> create 'Users', 'cf'
 
 After you've done that - start the process flows in NiFi and you'll see data being imported into HBase.  Easy as that!
 
-![USers](users.png)
+![USers](images/users.png)
 
 ### Flume (1.7.0)
   
@@ -156,11 +131,36 @@ org.apache.flume.FlumeException: Error getting column family from HBase.Please v
 
 Simply do a `docker-compose restart flume` and it'll sort itself out.
 
-![Flume](flume.png)
+![Flume](images/flume.png)
 
 ## Credits
 The HDFS work has been tackled beautifully by [https://github.com/big-data-europe/docker-hadoop](https://github.com/big-data-europe/docker-hadoop), so I'm using a lot of what they did for the hadoop namenodes and datanodes.
 
-## TODO
-- Solr
-- Spark
+## Tested on...
+```
+$ docker version
+Client:
+ Version:      1.13.1
+ API version:  1.26
+ Go version:   go1.7.5
+ Git commit:   092cba3
+ Built:        Wed Feb  8 08:47:51 2017
+ OS/Arch:      darwin/amd64
+
+Server:
+ Version:      1.13.1
+ API version:  1.26 (minimum version 1.12)
+ Go version:   go1.7.5
+ Git commit:   092cba3
+ Built:        Wed Feb  8 08:47:51 2017
+ OS/Arch:      linux/amd64
+ Experimental: true
+
+
+$ docker-compose version
+docker-compose version 1.11.1, build 7c5d5e4
+docker-py version: 2.0.2
+CPython version: 2.7.12
+OpenSSL version: OpenSSL 1.0.2j  26 Sep 2016
+
+```
