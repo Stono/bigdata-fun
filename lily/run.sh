@@ -10,4 +10,4 @@ function finish {
 }
 trap finish TERM INT
 
-./bin/hbase-indexer server
+./bin/hbase-indexer server --zookeeper $HBASE_CONF_QUORUM:2181 

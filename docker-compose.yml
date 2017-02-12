@@ -154,7 +154,7 @@ services:
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
       - INDEX_COLLECTION_users=collection1
     volumes:
-      - ./config/:/data
+      - ./config/lily:/data
     depends_on:
       - hbase
       - hbase_master
