@@ -22,21 +22,6 @@ services:
     depends_on: 
       - jvm
 
-  flume: 
-    image: karlstoney/flume
-    hostname: flume
-    container_name: flume
-    restart: always
-    volumes:
-      - ./config/flume:/opt/flume/conf
-      - ./data/flume:/data
-    environment:
-      - FLUME_AGENT_NAME=agent
-    depends_on:
-      - jvm
-      - namenode
-      - hbase_zookeeper
-
   hbase_zookeeper:
     image: karlstoney/hbase
     hostname: hbase-zookeeper
@@ -119,7 +104,7 @@ services:
       - HBASE_CONF_QUORUM=hbase-zookeeper
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
-      - 8080:8080   # API
+      - 8080:8080   # api
     depends_on:
       - hbase
       - hbase_master
@@ -171,3 +156,33 @@ services:
       - hadoop
     env_file:
       - ./hadoop.env
+
+  nifi:
+    image: karlstoney/nifi
+    hostname: nifi
+    container_name: nifi
+    ports:
+      - 8081:8081
+      - 8082:8080 # UI
+    depends_on:
+      - jvm
+      - hbase_master
+      - hbase_regionserver
+      - hbase_zookeeper   
+
+  flume: 
+    image: karlstoney/flume
+    hostname: flume
+    container_name: flume
+    restart: always
+    volumes:
+      - ./config/flume:/opt/flume/conf
+      - ./data/flume:/data
+    environment:
+      - FLUME_AGENT_NAME=agent
+    depends_on:
+      - jvm
+      - namenode
+      - hbase_master
+      - hbase_regionserver
+      - hbase_zookeeper

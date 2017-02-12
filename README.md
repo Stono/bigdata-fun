@@ -8,7 +8,8 @@ The key components are:
 - [HDFS](http://hortonworks.com/apache/hdfs) - Distributed file system, including two data nodes
 - [HBase](http://hortonworks.com/apache/hbase) - Non-relational, distributed database similar to Google BigTable
 - [Hue](http://gethue.com) - Web interface for analyzing data
-- [Flume](https://flume.apache.org/) - Apache flume, for getting some data in
+- [NiFi](https://nifi.apache.org) - A system to process and distribute data
+- [Flume](https://flume.apache.org/) - A headless way to process and distribute data
 
 The following components will be coming soon:
 
@@ -51,6 +52,7 @@ To get started, run: `docker-compose up`
 Give it a minute to get its ducks in line, and then access the key things you'll be interested in:
 
 - Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
+- NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
 - HDFS NameNode UI: [http://127.0.0.1:50070](http://127.0.0.1:50070)
 - Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 - HBase Master UI: [http://127.0.0.1:16010](http://127.0.0.1:16010)
@@ -97,12 +99,41 @@ The rest & thrift interfaces sit on top of the cluster, you can stop them if you
 
 When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
 
+#### NiFi (1.1.1)
+
+ - nifi
+
+Ahhh NiFi.  Think of it as the more feature complete, graphical version of Flume.  It really does make getting data into HBase rather simple.
+
+To get started, I reccomend using some templates from [Here](https://github.com/hortonworks-gallery/nifi-templates/tree/master/templates), in particular [Fun With HBase](https://raw.githubusercontent.com/hortonworks-gallery/nifi-templates/master/templates/Fun_with_HBase.xml) which will get you importing some random user data into HBase in a matter of minutes.
+
+The only think you actually need to configure is the controller service `HBase_1_1_2_ClientService`.  Basically you need to point it at ZooKeeper so it can discover your HBase nodes.
+
+![NiFi](nifi.png)
+
+Oh, and create the table in HBase:
+
+```
+$ docker-compose exec hbase_master hbase shell
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.3.0, re359c76e8d9fd0d67396456f92bcbad9ecd7a710, Tue Jan  3 05:31:38 MSK 2017
+
+hbase(main):001:0> create 'Users', 'cf'
+0 row(s) in 5.4940 seconds
+
+=> Hbase::Table - Users
+```
+
+After you've done that - start the process flows in NiFi and you'll see data being imported into HBase.  Easy as that!
+
+![USers](users.png)
 
 ### Flume (1.7.0)
   
  - flume
 
-I wanted a way to stream data into Hadoop or HBase easily.  That's what this container does.  It includes the java classes for hbase and hadoop too so those sinks will work.  By default, docker-compose will mount `./data/flume`, and any files you place in there will be 'flumed' into a HBase table called `flume_sink`, with the column family `cf`.  That's all config driven though so edit `./config/flume/flume-conf.properties` to change that behaviour.  
+I wanted a GUI-less way to strema data into HBase or HDFS too.  That's what this container does.  It includes the java classes for HBase and HDFS too so those sinks will work.  By default, docker-compose will mount `./data/flume`, and any files you place in there will be 'flumed' into a HBase table called `flume_sink`, with the column family `cf`.  That's all config driven though so edit `./config/flume/flume-conf.properties` to change that behaviour.  
   
 In order for the HBase aspect to work, you need to create the table first, that's easiest via the hbase shell.
 
@@ -116,7 +147,6 @@ hbase(main):001:0> create 'flume_sink', 'cf'
 0 row(s) in 2.5370 seconds
 
 => Hbase::Table - flume_sink
-hbase(main):002:0>
 ```
 
 If you've started flume before creating this table, you'll be seeing errors like this:

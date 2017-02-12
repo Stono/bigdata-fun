@@ -12,6 +12,9 @@ services:
   
   flume:
     build: ./flume
+ 
+  nifi:
+    build: ./nifi
 
   hue:
     build: ./hue
