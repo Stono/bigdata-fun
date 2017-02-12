@@ -1,7 +1,7 @@
 FROM karlstoney/jvm:latest
 
-# Get nodejs repos 
-RUN curl --silent --location https://rpm.nodesource.com/setup_7.x | bash - 
+# Get nodejs repos
+RUN curl --silent --location https://rpm.nodesource.com/setup_7.x | bash -
 
 # Install nodejs, currently 7.4.0
 RUN yum -y -q install nodejs-7.4.* gcc-c++ make git bzip2 && \
@@ -14,7 +14,7 @@ ENV BANANA_DIST https://github.com/lucidworks/banana/archive/v$BANANA_VERSION.ta
 RUN curl --silent -fSL "$BANANA_DIST" -o /tmp/banana.tar.gz && \
     tar -xf /tmp/banana.tar.gz -C /opt/ && \
     rm -f /tmp/banana.tar.gz && \
-    mv /opt/banana-* $BANANA_HOME 
+    mv /opt/banana-* $BANANA_HOME
 
 RUN cd /opt/banana && \
     npm install -q
@@ -23,6 +23,6 @@ ENV SOLR_HOST solr
 ENV SOLR_PORT 8983
 ENV SOLR_DOMAIN solr/
 
-EXPOSE 8000 
+EXPOSE 8000
 ADD run.sh /usr/local/bin/run.sh
 CMD ["/usr/local/bin/run.sh"]

@@ -43,7 +43,7 @@ Whichever method you use, give it a minute to get its ducks in line, and then ac
 
 This is a HDFS cluster running two datanodes.  Each of these run in their own container too.
 
-![HDFS](images/hdfs.png)
+![HDFS](images/HDFS.png)
 
 ### HBase (1.3.0)
 
