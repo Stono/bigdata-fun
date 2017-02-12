@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-echo Starting Solr in SolrCloud mode...
+echo Starting Solr...
 chown -R solr:solr /data
 cd /opt/solr
 

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<indexer table="indexdemo-user">
+  <field name="firstname_s" value="cf:firstName"/>
+  <field name="lastname_s" value="cf:lastName"/>
+  <field name="email_s" value="cf:email"/>
+</indexer>

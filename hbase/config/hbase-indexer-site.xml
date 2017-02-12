@@ -1,0 +1,11 @@
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>hbaseindexer.zookeeper.connectstring</name>
+    <value>$HBASE_CONF_QUORUM</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>$HBASE_CONF_QUORUM</value>
+  </property>
+</configuration>

@@ -22,6 +22,42 @@ services:
     depends_on: 
       - jvm
 
+  # HDFS
+  namenode:
+    image: karlstoney/namenode 
+    hostname: namenode
+    container_name: namenode
+    depends_on:
+      - hadoop
+    ports:
+      - 50070:50070
+      - 8020:8020
+    env_file:
+      - ./hadoop.env
+    environment:
+      - CLUSTER_NAME=test
+
+  datanode1:
+    image: karlstoney/datanode 
+    hostname: datanode1
+    container_name: datanode1
+    depends_on:
+      - namenode
+      - hadoop
+    env_file:
+      - ./hadoop.env
+
+  datanode2:
+    image: karlstoney/datanode 
+    hostname: datanode2
+    container_name: datanode2
+    depends_on:
+      - namenode
+      - hadoop
+    env_file:
+      - ./hadoop.env
+
+  # HBase
   hbase_zookeeper:
     image: karlstoney/hbase
     hostname: hbase-zookeeper
@@ -109,53 +145,20 @@ services:
       - hbase
       - hbase_master
 
-  hue:
-    image: karlstoney/hue
-    hostname: hue
-    container_name: hue
-    restart: always
-    depends_on:
-      - hbase_master
-      - hbase_regionserver
-      - hbase_thrift
-      - hbase_rest
-      - hbase_zookeeper
-    ports:
-      - 8888:8888
-       
-  namenode:
-    image: karlstoney/namenode 
-    hostname: namenode
-    container_name: namenode
-    depends_on:
-      - hadoop
-    ports:
-      - 50070:50070
-      - 8020:8020
-    env_file:
-      - ./hadoop.env
+  lily:
+    image: karlstoney/lily
+    hostname: lily
+    container_name: lily
     environment:
-      - CLUSTER_NAME=test
-
-  datanode1:
-    image: karlstoney/datanode 
-    hostname: datanode1
-    container_name: datanode1
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+      - INDEX_COLLECTION_users=collection1
+    volumes:
+      - ./conf/hbase-indexer:/data
     depends_on:
-      - namenode
-      - hadoop
-    env_file:
-      - ./hadoop.env
-
-  datanode2:
-    image: karlstoney/datanode 
-    hostname: datanode2
-    container_name: datanode2
-    depends_on:
-      - namenode
-      - hadoop
-    env_file:
-      - ./hadoop.env
+      - hbase
+      - hbase_master
+      - solr
 
   solr:
     image: karlstoney/solr
@@ -165,6 +168,16 @@ services:
       - 8983:8983 # UI
     depends_on:
       - jvm
+
+  banana:
+    image: karlstoney/banana
+    hostname: banana
+    container_name: banana
+    ports:
+      - 8000:8000 # UI
+    depends_on:
+      - hbase_zookeeper
+      - solr   
 
   nifi:
     image: karlstoney/nifi
@@ -178,6 +191,20 @@ services:
       - hbase_master
       - hbase_regionserver
       - hbase_zookeeper   
+
+  hue:
+    image: karlstoney/hue
+    hostname: hue
+    container_name: hue
+    restart: always
+    depends_on:
+      - hbase_master
+      - hbase_regionserver
+      - hbase_thrift
+      - hbase_rest
+      - hbase_zookeeper
+    ports:
+      - 8888:8888
 
   flume: 
     image: karlstoney/flume

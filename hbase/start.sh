@@ -14,6 +14,7 @@ do
 	echo ""
 
 	envsubst < /opt/hbase/conf/hbase-site.template > /opt/hbase/conf/hbase-site.xml
+	envsubst < /opt/hbase-indexer/conf/hbase-indexer-site.template > /opt/hbase-indexer/conf/hbase-indexer-site.xml
 done
 
 echo "Configuring host file..."

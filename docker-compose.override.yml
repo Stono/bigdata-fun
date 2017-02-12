@@ -15,6 +15,12 @@ services:
   
   solr:
     build: ./solr
+ 
+  banana:
+    build: ./banana
+
+  lily:
+    build: ./lily
 
   nifi:
     build: ./nifi
