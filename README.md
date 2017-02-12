@@ -99,7 +99,7 @@ The rest & thrift interfaces sit on top of the cluster, you can stop them if you
 
 When you first use Hue, it does a health check and will tell you that a bunch of stuff isn't configured correctly, that's fine as I don't plan to build the whole Cloudera stack, just 'next next next' thought it and use the components that matter, like the [HBase Browser](http://127.0.0.1:8888/hbase/#hbase).
 
-#### NiFi (1.1.1)
+### NiFi (1.1.1)
 
  - nifi
 
