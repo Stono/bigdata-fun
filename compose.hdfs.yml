@@ -16,10 +16,10 @@ services:
       - 17000:50070
     mem_limit: 512m
     memswap_limit: 2g
-    env_file:
-      - ./hadoop.env
     environment:
       - CLUSTER_NAME=test
+    env_file:
+      - ./stack.env
 
   datanode:
     image: karlstoney/datanode 
@@ -30,7 +30,7 @@ services:
     mem_limit: 512m
     memswap_limit: 2g
     env_file:
-      - ./hadoop.env
+      - ./stack.env
 
   resourcemanager:
     image: karlstoney/resourcemanager 
@@ -41,4 +41,4 @@ services:
     mem_limit: 512m
     memswap_limit: 2g
     env_file:
-      - ./hadoop.env
+      - ./stack.env

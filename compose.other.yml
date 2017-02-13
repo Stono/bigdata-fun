@@ -14,10 +14,10 @@ services:
     container_name: solr
     mem_limit: 1g
     memswap_limit: 2g
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
     ports:
       - 17008:8983 # UI
+    env_file:
+      - ./stack.env
 
   lily:
     image: karlstoney/lily
@@ -27,11 +27,11 @@ services:
     mem_limit: 1g
     memswap_limit: 2g
     environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
       - INDEX_COLLECTION_users=collection1
     volumes:
       - ./config/lily:/data
+    env_file:
+      - ./stack.env
 
   banana:
     image: karlstoney/banana
@@ -45,6 +45,8 @@ services:
       - SOLR_PORT=8983
     ports:
       - 17009:8000 # UI
+    env_file:
+      - ./stack.env
 
   # These are extra tools
   nifi:

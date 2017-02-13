@@ -1,22 +1,34 @@
 #!/bin/bash
-
+set -e
 if ! hash jq 2>/dev/null; then
   echo You need JQ installed matey!  Please install it first. 
   echo Once you have done that, run ./demo-init.sh
   exit 1
 fi
+
+echo Waiting for HBase to become ready... 
+set +e
+until $(docker-compose exec master /bin/sh -c "echo \"status\" | hbase shell" &>/dev/null); do
+  printf '.'
+  sleep 1
+done
+set -e 
  
 echo Creating Users table in HBase...
 docker-compose exec master /bin/sh -c "echo \"create 'Users', { NAME => 'cf', REPLICATION_SCOPE => '1' }\" | hbase shell"
 
 export WEB="http://127.0.0.1:17007/nifi"
 export API="http://127.0.0.1:17007/nifi-api"
-echo Waiting for NiFi to come up...
+echo -n Waiting for NiFi to come up, this can take a minute or two...
+
+set +e 
 until $(curl --output /dev/null --silent --head --fail $WEB); do
   printf '.'
-  sleep 2
+  sleep 5
 done
+set -e
 
+echo ""
 echo Creating Templates in NiFi...
 export PROCESS_GROUP=$(curl -s $API/flow/process-groups/root | jq .processGroupFlow.id)
 export PROCESS_GROUP=$(echo $PROCESS_GROUP | tr -d '"')

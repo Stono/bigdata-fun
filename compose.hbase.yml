@@ -15,10 +15,10 @@ services:
     command: hbase zookeeper start
     mem_limit: 512m
     memswap_limit: 1g
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
     ports:
       - 17003:2181
+    env_file:
+      - ./stack.env
 
   regionserver:
     image: karlstoney/hbase
@@ -29,11 +29,10 @@ services:
     command: hbase regionserver start
     mem_limit: 512m
     memswap_limit: 1g
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
       - 17002:16030 
+    env_file:
+      - ./stack.env
 
   master:
     image: karlstoney/hbase
@@ -64,11 +63,10 @@ services:
     command: hbase thrift start -t 5000 -p 9090
     mem_limit: 1g
     memswap_limit: 2g
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
       - 17004:9095   # UI
+    env_file:
+      - ./stack.env
 
   rest:
     image: karlstoney/hbase
@@ -79,8 +77,7 @@ services:
     command: hbase rest start 
     mem_limit: 512m
     memswap_limit: 2g
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
       - 17005:8080   # api
+    env_file:
+      - ./stack.env
