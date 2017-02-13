@@ -44,8 +44,6 @@ services:
     mem_limit: 512m
     memswap_limit: 1g
     environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
       # docker-compose networking is flakey, I've added a script
       # which does DNS looking for any HOST_ENTRY_* ENV variables
       # and adds it to the hostfile for the container, thus bypassing 
@@ -53,6 +51,8 @@ services:
       - HOST_ENTRY_1=hbase-regionserver
     ports:
       - 17001:16010 
+    env_file:
+      - ./stack.env
 
   thrift:
     image: karlstoney/hbase

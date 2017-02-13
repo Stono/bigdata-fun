@@ -20,6 +20,9 @@ WORKDIR /opt/solr
 VOLUME /data
 EXPOSE 8983
 
+# Enable CORS
+COPY web.xml /opt/solr/server/solr-webapp/webapp/WEB-INF/web.xml
+
 HEALTHCHECK CMD curl -f http://localhost:8983/ || exit 1
 COPY run.sh /usr/local/bin/run.sh
 CMD ["/usr/local/bin/run.sh"]

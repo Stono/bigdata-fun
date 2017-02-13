@@ -43,6 +43,8 @@ services:
     environment:
       - SOLR_HOST=solr
       - SOLR_PORT=8983
+      - CLIENT_SOLR_HOST=127.0.0.1
+      - CLIENT_SOLR_PORT=17008 
     ports:
       - 17009:8000 # UI
     env_file:
