@@ -23,13 +23,12 @@ The following components will be coming soon:
 ### Requirements
 As most of these components run inside a JVM, as you've probably guessed - this fully distributed setup is rather resource intensive.  If you're on Linux, with an alright amount of RAM, you'll be fine.  However if you're running docker through Virtualisation like HyperV or Qemu2 (mac), you need may need to tweak things a little.  
 
-**IMPORTANT** If you're on Mac, ensure you have adequate RAM assigned to the docker daemon (Preferences -> Advanced).  I personally have this set to 8gb, on a 16gb Mac.
+**IMPORTANT** If you're on Mac, ensure you have adequate RAM assigned to the docker daemon (Preferences -> Advanced).  I personally have this set to 8gb, on a 16gb Mac and it runs [sweet as a nut](http://www.urbandictionary.com/define.php?term=sweet%20as%20a%20nut).
 
-### Starting everything
 **IMPORTANT**: Before you do anything, you need to build the base images.  Please do `docker-compose -f compose.build.yml build`
 
-If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
-Key URLs:
+### Key URLs
+Once you've used one of the start up options below, these are your key URLs:
 
 - HDFS NameNode UI: [http://127.0.0.1:17000](http://127.0.0.1:17000)
 - HBase Master UI: [http://127.0.0.1:17001](http://127.0.0.1:17001)
@@ -42,7 +41,10 @@ Key URLs:
 - Solr UI: [http://127.0.0.1:17008](http://127.0.0.1:17008)
 - Banana UI: [http://127.0.0.1:17009](http://127.0.0.1:17009/src/index.html#/dashboard)
 
-### Starting individual components
+### Startup Options
+#### Starting everything
+If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
+#### Starting individual components
 I've tried to break the docker-compose file down into sub sections:
 
  - HDFS: `docker-compose up namenode datanode1 datanode2 resourcemanager`
@@ -51,10 +53,8 @@ I've tried to break the docker-compose file down into sub sections:
 
 Then you've got the other tools too, so start them by name: `hue`, `nifi`.
 
-### Starting the user import demo 
+#### Starting the user import demo (recommended) 
 I am working on a complete end to end demo however, so if you prefer, just run `./demo.sh`.  The idea of this demo is to read in random user data from a sample API, import that into HBase, have the indexer then send that over to Solr so we can query it in Banana.
-
-Whichever method you use, give it a minute to get its ducks in line, and then access the key things you'll be interested in:
 
 ## The components in detail
 
