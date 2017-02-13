@@ -19,4 +19,4 @@ docker-compose up -d nifi
 echo Starting Hue...
 docker-compose up -d hue
 
-
+./demo-init.sh
