@@ -21,6 +21,13 @@ The following components will be coming soon:
 ## Getting started
 **Important**: Before you do anything, you need to build the base images.  Please do `docker-compose -f compose.build.yml build`
 
+Also, as most of these components run inside a JVM, as you've probably guessed - this fully distributed setup is rather resource intensive.  I'm running on a MacBook Pro ('16) with 16GB ram and it still starts to chug when everything is running.  As a result I would suggest:
+
+ - Not being on Mac or Windows, rather Linux, as the VM level abstraction of HyperV or Qemu2 adds a level of overlay which hinders performance and resource management 
+ - Having 32GB ram
+
+You can actually run `rest`, `thrift`, `master`, `region` on a single JVM/Node if you want to.  But I haven't configured it that way.
+
 ### Starting everything
 If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
 
