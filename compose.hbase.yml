@@ -18,7 +18,7 @@ services:
     environment:
       - HBASE_CONF_QUORUM=hbase-zookeeper
     ports:
-      - 2181:2181
+      - 17003:2181
 
   regionserver:
     image: karlstoney/hbase
@@ -33,8 +33,7 @@ services:
       - HBASE_CONF_QUORUM=hbase-zookeeper
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
-      - 16020:16020
-      - 16030:16030 
+      - 17002:16030 
 
   master:
     image: karlstoney/hbase
@@ -54,8 +53,7 @@ services:
       # the DNS lookup which adds the project network name
       - HOST_ENTRY_1=hbase-regionserver
     ports:
-      - 16000:16000
-      - 16010:16010 
+      - 17001:16010 
 
   thrift:
     image: karlstoney/hbase
@@ -70,8 +68,7 @@ services:
       - HBASE_CONF_QUORUM=hbase-zookeeper
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
-      - 9090:9090   # API
-      - 9095:9095   # UI
+      - 17004:9095   # UI
 
   rest:
     image: karlstoney/hbase
@@ -86,4 +83,4 @@ services:
       - HBASE_CONF_QUORUM=hbase-zookeeper
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
     ports:
-      - 8080:8080   # api
+      - 17005:8080   # api

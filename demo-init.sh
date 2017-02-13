@@ -9,8 +9,8 @@ fi
 echo Creating Users table in HBase...
 docker-compose exec master /bin/sh -c "echo \"create 'Users', { NAME => 'cf', REPLICATION_SCOPE => '1' }\" | hbase shell"
 
-export WEB="http://127.0.0.1:8082/nifi"
-export API="http://127.0.0.1:8082/nifi-api"
+export WEB="http://127.0.0.1:17007/nifi"
+export API="http://127.0.0.1:17007/nifi-api"
 echo Waiting for NiFi to come up...
 until $(curl --output /dev/null --silent --head --fail $WEB); do
   printf '.'

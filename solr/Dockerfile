@@ -15,11 +15,11 @@ RUN groupadd solr && \
 
 RUN yum -y -q install lsof
     
-# Open port 8081 for the HTTP listen
 WORKDIR /opt/solr
 
 VOLUME /data
 EXPOSE 8983
 
+HEALTHCHECK CMD curl -f http://localhost:8983/ || exit 1
 COPY run.sh /usr/local/bin/run.sh
 CMD ["/usr/local/bin/run.sh"]

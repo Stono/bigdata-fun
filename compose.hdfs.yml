@@ -13,8 +13,7 @@ services:
     hostname: namenode
     container_name: namenode
     ports:
-      - 50070:50070
-      - 8020:8020
+      - 17000:50070
     mem_limit: 512m
     memswap_limit: 2g
     env_file:

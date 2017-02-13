@@ -24,5 +24,6 @@ ENV SOLR_PORT 8983
 ENV SOLR_DOMAIN solr/
 
 EXPOSE 8000
+HEALTHCHECK CMD curl -f http://localhost:8080/ || exit 1
 ADD run.sh /usr/local/bin/run.sh
 CMD ["/usr/local/bin/run.sh"]

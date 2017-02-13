@@ -17,7 +17,7 @@ services:
     environment:
       - HBASE_CONF_QUORUM=hbase-zookeeper
     ports:
-      - 8983:8983 # UI
+      - 17008:8983 # UI
 
   lily:
     image: karlstoney/lily
@@ -44,7 +44,7 @@ services:
       - SOLR_HOST=solr
       - SOLR_PORT=8983
     ports:
-      - 8000:8000 # UI
+      - 17009:8000 # UI
 
   # These are extra tools
   nifi:
@@ -56,8 +56,7 @@ services:
     mem_limit: 1g
     memswap_limit: 2g
     ports:
-      - 8081:8081
-      - 8082:8080 # UI
+      - 17007:8080 # UI
 
   hue:
     image: karlstoney/hue
@@ -68,7 +67,7 @@ services:
     mem_limit: 1g
     memswap_limit: 2g
     ports:
-      - 8888:8888
+      - 17006:8888 # UI
 
   flume: 
     image: karlstoney/flume

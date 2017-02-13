@@ -20,9 +20,9 @@ VOLUME ["/opt/nifi/database_repository", \
         "/opt/nifi/content_repository", \
         "/opt/nifi/provenance_repository"]
 
-# Open port 8081 for the HTTP listen
 USER nifi
 WORKDIR /opt/nifi
-EXPOSE 8080 8081
+EXPOSE 8080 
 
+HEALTHCHECK CMD curl -f http://localhost:8080/ || exit 1
 CMD ["bin/nifi.sh", "run"]

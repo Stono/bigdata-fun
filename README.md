@@ -31,7 +31,20 @@ You can actually run `rest`, `thrift`, `master`, `region` on a single JVM/Node i
 ### Starting everything
 If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
 
-### Starting components
+Key URLs:
+
+- HDFS NameNode UI: [http://127.0.0.1:17000](http://127.0.0.1:17000)
+- HBase Master UI: [http://127.0.0.1:17001](http://127.0.0.1:17001)
+- HBase Region UI: [http://127.0.0.1:17002](http://127.0.0.1:17002)
+- ZooKeeper API: [http://127.0.0.1:17003](http://127.0.0.1:17003)
+- Thrift UI: [http://127.0.0.1:17004](http://127.0.0.1:17004)
+- HBase Rest API: [http://127.0.0.1:17005](http://127.0.0.1:17005)
+- Hue UI: [http://127.0.0.1:17006](http://127.0.0.1:17006)
+- NiFi UI: [http://127.0.0.1:17007](http://127.0.0.1:17007)
+- Solr UI: [http://127.0.0.1:17008](http://127.0.0.1:17008)
+- Banana UI: [http://127.0.0.1:17009](http://127.0.0.1:17009/src/index.html#/dashboard)
+
+### Starting individual components
 I've tried to break the docker-compose file down into sub sections:
 
  - HDFS: `docker-compose up namenode datanode1 datanode2`
@@ -40,19 +53,10 @@ I've tried to break the docker-compose file down into sub sections:
 
 Then you've got the other tools too, so start them by name: `hue`, `nifi`.
 
-### User import demo
+### Starting the user import demo 
 I am working on a complete end to end demo however, so if you prefer, just run `./demo.sh`.  The idea of this demo is to read in random user data from a sample API, import that into HBase, have the indexer then send that over to Solr so we can query it in Banana.
 
 Whichever method you use, give it a minute to get its ducks in line, and then access the key things you'll be interested in:
-
-- HDFS NameNode UI: [http://127.0.0.1:50070](http://127.0.0.1:50070)
-- HBase Master UI: [http://127.0.0.1:16010](http://127.0.0.1:16010)
-- HBase Region UI: [http://127.0.0.1:16030](http://127.0.0.1:16030)
-- Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
-- NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
-- Solr UI: [http://127.0.0.1:8983](http://127.0.0.1:8983)
-- Banana UI: [http://127.0.0.1:8000/src/index.html#/dashboard](http://127.0.0.1:8000)
-- Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 
 ## The components in detail
 
