@@ -19,18 +19,16 @@ The following components will be coming soon:
 - [Spark](http://spark.apache.org/) - Data processing engine
 
 ## Getting started
-**Important**: Before you do anything, you need to build the base images.  Please do `docker-compose -f compose.build.yml build`
 
-Also, as most of these components run inside a JVM, as you've probably guessed - this fully distributed setup is rather resource intensive.  I'm running on a MacBook Pro ('16) with 16GB ram and it still starts to chug when everything is running.  As a result I would suggest:
+### Requirements
+As most of these components run inside a JVM, as you've probably guessed - this fully distributed setup is rather resource intensive.  If you're on Linux, with an alright amount of RAM, you'll be fine.  However if you're running docker through Virtualisation like HyperV or Qemu2 (mac), you need may need to tweak things a little.  
 
- - Not being on Mac or Windows, rather Linux, as the VM level abstraction of HyperV or Qemu2 adds a level of overlay which hinders performance and resource management 
- - If you're on Mac, ensure you have adequate RAM assigned to the docker daemon (Preferences -> Advanced).  I personally have this set to 8gb, on a 16gb Mac.
-
-You can actually run `rest`, `thrift`, `master`, `region` on a single JVM/Node if you want to.  But I haven't configured it that way.
+**IMPORTANT** If you're on Mac, ensure you have adequate RAM assigned to the docker daemon (Preferences -> Advanced).  I personally have this set to 8gb, on a 16gb Mac.
 
 ### Starting everything
-If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
+**IMPORTANT**: Before you do anything, you need to build the base images.  Please do `docker-compose -f compose.build.yml build`
 
+If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
 Key URLs:
 
 - HDFS NameNode UI: [http://127.0.0.1:17000](http://127.0.0.1:17000)
