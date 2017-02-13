@@ -45,7 +45,7 @@ Key URLs:
 ### Starting individual components
 I've tried to break the docker-compose file down into sub sections:
 
- - HDFS: `docker-compose up namenode datanode1 datanode2`
+ - HDFS: `docker-compose up namenode datanode1 datanode2 resourcemanager`
  - HBase: `docker-compose up zookeeper regionserver master thrift rest`, requires HDFS
  - Solr/Lily/Banana: `docker-compose up solr banana lily`, requires HBase
 
