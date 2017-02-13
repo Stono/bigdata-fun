@@ -14,6 +14,8 @@ services:
     ports:
       - 50070:50070
       - 8020:8020
+    mem_limit: 512m
+    memswap_limit: 2g
     env_file:
       - ./hadoop.env
     environment:
@@ -24,5 +26,7 @@ services:
     build: ./datanode
     hostname: datanode
     container_name: datanode
+    mem_limit: 512m
+    memswap_limit: 2g
     env_file:
       - ./hadoop.env

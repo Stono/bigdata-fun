@@ -12,6 +12,8 @@ services:
     build: ./solr
     hostname: solr
     container_name: solr
+    mem_limit: 1g
+    memswap_limit: 2g
     environment:
       - HBASE_CONF_QUORUM=hbase-zookeeper
     ports:
@@ -22,6 +24,8 @@ services:
     build: ./lily
     hostname: lily
     container_name: lily
+    mem_limit: 1g
+    memswap_limit: 2g
     environment:
       - HBASE_CONF_QUORUM=hbase-zookeeper
       - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
@@ -34,6 +38,8 @@ services:
     build: ./banana
     hostname: banana
     container_name: banana
+    mem_limit: 512m
+    memswap_limit: 1g
     environment:
       - SOLR_HOST=solr
       - SOLR_PORT=8983
@@ -47,6 +53,8 @@ services:
     restart: always
     hostname: nifi
     container_name: nifi
+    mem_limit: 1g
+    memswap_limit: 2g
     ports:
       - 8081:8081
       - 8082:8080 # UI
@@ -57,6 +65,8 @@ services:
     hostname: hue
     container_name: hue
     restart: always
+    mem_limit: 1g
+    memswap_limit: 2g
     ports:
       - 8888:8888
 
