@@ -44,6 +44,7 @@ Once you've used one of the start up options below, these are your key URLs:
 ### Startup Options
 #### Starting everything
 If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
+
 #### Starting individual components
 I've tried to break the docker-compose file down into sub sections:
 
