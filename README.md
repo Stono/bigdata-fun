@@ -16,7 +16,7 @@ The key components currently implemented are:
 
 The following components will be coming soon:
 
-- [Spark](http://spark.apache.org/) - Data processing engine
+- [Spark](http://spark.apache.org/) - Data processing engine, probably managed by [Livy](http://livy.io/)
 
 ## Getting started
 
