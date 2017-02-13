@@ -42,6 +42,7 @@ Once you've used one of the start up options below, these are your key URLs:
 - Banana UI: [http://127.0.0.1:17009](http://127.0.0.1:17009/src/index.html#/dashboard)
 
 ### Startup Options
+
 #### Starting everything
 If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
 
