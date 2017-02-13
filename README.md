@@ -61,8 +61,9 @@ Whichever method you use, give it a minute to get its ducks in line, and then ac
  - namenode
  - datanode1
  - datanode2
+ - resourcemanager
 
-This is a HDFS cluster running two datanodes.  Each of these run in their own container too.
+This is a HDFS cluster running two data nodes, and a YARN resource manager.
 
 ![HDFS](images/HDFS.png)
 
