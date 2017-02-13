@@ -24,7 +24,7 @@ The following components will be coming soon:
 Also, as most of these components run inside a JVM, as you've probably guessed - this fully distributed setup is rather resource intensive.  I'm running on a MacBook Pro ('16) with 16GB ram and it still starts to chug when everything is running.  As a result I would suggest:
 
  - Not being on Mac or Windows, rather Linux, as the VM level abstraction of HyperV or Qemu2 adds a level of overlay which hinders performance and resource management 
- - Having 32GB ram
+ - If you're on Mac, ensure you have adequate RAM assigned to the docker daemon (Preferences -> Advanced).  I personally have this set to 8gb, on a 16gb Mac.
 
 You can actually run `rest`, `thrift`, `master`, `region` on a single JVM/Node if you want to.  But I haven't configured it that way.
 
@@ -101,7 +101,7 @@ When you first use Hue, it does a health check and will tell you that a bunch of
 
  - nifi
 
-Ahhh NiFi.  Think of it as the more feature complete, graphical version of Flume.  It really does make getting data into HBase rather simple.
+Ahhh NiFi.  Think of it as the more feature complete, graphical version of Flume.  It really does make getting data into HBase rather simple.  However, as it's generally the last to start - if your machine is resource constrained then NiFi will just randomly not boot.  Give docker more ram, buy more ram, just ram.
 
 To get started, I reccomend using some templates from [Here](https://github.com/hortonworks-gallery/nifi-templates/tree/master/templates), in particular [Fun With HBase](https://raw.githubusercontent.com/hortonworks-gallery/nifi-templates/master/templates/Fun_with_HBase.xml) which will get you importing some random user data into HBase in a matter of minutes.
 
