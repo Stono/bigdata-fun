@@ -9,6 +9,7 @@ services:
   namenode:
     image: karlstoney/namenode
     build: ./namenode 
+    restart: always
     hostname: namenode
     container_name: namenode
     ports:
@@ -24,8 +25,20 @@ services:
   datanode:
     image: karlstoney/datanode 
     build: ./datanode
+    restart: always
     hostname: datanode
     container_name: datanode
+    mem_limit: 512m
+    memswap_limit: 2g
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: karlstoney/resourcemanager 
+    build: ./resourcemanager
+    restart: always
+    hostname: resourcemanager
+    container_name: resourcemanager
     mem_limit: 512m
     memswap_limit: 2g
     env_file:

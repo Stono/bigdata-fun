@@ -25,6 +25,17 @@ services:
     depends_on:
       - namenode
 
+  resourcemanager:
+    extends:
+      file: compose.hdfs.yml
+      service: resourcemanager
+    container_name: resourcemanager
+    hostname: resourcemanager
+    depends_on:
+      - namenode
+      - datanode1
+      - datanode2
+
   # HBase
   zookeeper:
     extends:

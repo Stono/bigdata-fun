@@ -9,9 +9,9 @@ services:
   zookeeper:
     image: karlstoney/hbase
     build: ./hbase
+    restart: always
     hostname: hbase-zookeeper
     container_name: hbase-zookeeper
-    restart: always
     command: hbase zookeeper start
     mem_limit: 512m
     memswap_limit: 1g
@@ -23,9 +23,9 @@ services:
   regionserver:
     image: karlstoney/hbase
     build: ./hbase
+    restart: always
     hostname: hbase-regionserver
     container_name: hbase-regionserver
-    restart: always
     command: hbase regionserver start
     mem_limit: 512m
     memswap_limit: 1g
@@ -39,9 +39,9 @@ services:
   master:
     image: karlstoney/hbase
     build: ./hbase
+    restart: always
     hostname: hbase-master
     container_name: hbase-master
-    restart: always
     command: hbase master start
     mem_limit: 512m
     memswap_limit: 1g
@@ -60,9 +60,9 @@ services:
   thrift:
     image: karlstoney/hbase
     build: ./hbase
+    restart: always
     hostname: hbase-thrift
     container_name: hbase-thrift
-    restart: always
     command: hbase thrift start -t 5000 -p 9090
     mem_limit: 1g
     memswap_limit: 2g
@@ -76,9 +76,9 @@ services:
   rest:
     image: karlstoney/hbase
     build: ./hbase
+    restart: always
     hostname: hbase-rest
     container_name: hbase-rest
-    restart: always
     command: hbase rest start 
     mem_limit: 512m
     memswap_limit: 2g
