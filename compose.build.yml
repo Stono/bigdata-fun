@@ -1,0 +1,24 @@
+version: '2'
+
+# This file is used to build the base images
+# which some of the other services use
+# They're never actuall run.
+services:
+  jvm:
+    image: karlstoney/jvm
+    build: ./jvm
+    command: /bin/false
+
+  hadoop:
+    image: karlstoney/hadoop
+    build: ./hadoop
+    command: /bin/false
+    depends_on:
+      - jvm
+
+  hbase:
+    image: karlstoney/hbase
+    build: ./hbase
+    command: /bin/false
+    depends_on: 
+      - jvm

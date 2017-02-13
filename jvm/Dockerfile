@@ -4,7 +4,7 @@ MAINTAINER Karl Stoney <me@karlstoney.com>
 VOLUME /data
 
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk
-ENV JAVA_OPTS "-Xms2g -Xmx4g -XX:MaxPermSize=2048m"
+ENV JAVA_OPTS "-Xms512m -Xmx2g"
 ENV TERM xterm-256color
 
 # Get dependencies

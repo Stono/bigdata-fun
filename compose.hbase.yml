@@ -1,0 +1,79 @@
+version: '2'
+
+services:
+  # Before building any of these containers; please run
+  # docker-compose -f docker-compose.build.yml build
+  # as that will build the base images
+
+  # HBase is here...
+  zookeeper:
+    image: karlstoney/hbase
+    build: ./hbase
+    hostname: hbase-zookeeper
+    container_name: hbase-zookeeper
+    restart: always
+    command: hbase zookeeper start
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+    ports:
+      - 2181:2181
+
+  regionserver:
+    image: karlstoney/hbase
+    build: ./hbase
+    hostname: hbase-regionserver
+    container_name: hbase-regionserver
+    restart: always
+    command: hbase regionserver start
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 16020:16020
+      - 16030:16030 
+
+  master:
+    image: karlstoney/hbase
+    build: ./hbase
+    hostname: hbase-master
+    container_name: hbase-master
+    restart: always
+    command: hbase master start
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+      # docker-compose networking is flakey, I've added a script
+      # which does DNS looking for any HOST_ENTRY_* ENV variables
+      # and adds it to the hostfile for the container, thus bypassing 
+      # the DNS lookup which adds the project network name
+      - HOST_ENTRY_1=hbase-regionserver
+    ports:
+      - 16000:16000
+      - 16010:16010 
+
+  thrift:
+    image: karlstoney/hbase
+    build: ./hbase
+    hostname: hbase-thrift
+    container_name: hbase-thrift
+    restart: always
+    command: hbase thrift start -t 5000 -p 9090
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 9090:9090   # API
+      - 9095:9095   # UI
+
+  rest:
+    image: karlstoney/hbase
+    build: ./hbase
+    hostname: hbase-rest
+    container_name: hbase-rest
+    restart: always
+    command: hbase rest start 
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+    ports:
+      - 8080:8080   # api

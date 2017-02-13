@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  # Before building any of these containers; please run
+  # docker-compose -f docker-compose.build.yml build
+  # as that will build the base images
+ 
+  # Solr, Lily and Banana are effectively
+  # ElasticSearch, Logstash and Kibana 
+  solr:
+    image: karlstoney/solr
+    build: ./solr
+    hostname: solr
+    container_name: solr
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+    ports:
+      - 8983:8983 # UI
+
+  lily:
+    image: karlstoney/lily
+    build: ./lily
+    hostname: lily
+    container_name: lily
+    environment:
+      - HBASE_CONF_QUORUM=hbase-zookeeper
+      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
+      - INDEX_COLLECTION_users=collection1
+    volumes:
+      - ./config/lily:/data
+
+  banana:
+    image: karlstoney/banana
+    build: ./banana
+    hostname: banana
+    container_name: banana
+    environment:
+      - SOLR_HOST=solr
+      - SOLR_PORT=8983
+    ports:
+      - 8000:8000 # UI
+
+  # These are extra tools
+  nifi:
+    image: karlstoney/nifi
+    build: ./nifi
+    restart: always
+    hostname: nifi
+    container_name: nifi
+    ports:
+      - 8081:8081
+      - 8082:8080 # UI
+
+  hue:
+    image: karlstoney/hue
+    build: ./hue
+    hostname: hue
+    container_name: hue
+    restart: always
+    ports:
+      - 8888:8888
+
+  flume: 
+    image: karlstoney/flume
+    build: ./flume
+    hostname: flume
+    container_name: flume
+    restart: always
+    volumes:
+      - ./config/flume:/opt/flume/conf
+      - ./data/flume:/data
+    environment:
+      - FLUME_AGENT_NAME=agent

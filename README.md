@@ -9,30 +9,43 @@ The key components currently implemented are:
 - [HBase](http://hortonworks.com/apache/hbase) - Non-relational, distributed database similar to Google BigTable
 - [Hue](http://gethue.com) - Web interface for analyzing data
 - [NiFi](https://nifi.apache.org) - A system to process and distribute data
-- [Flume](https://flume.apache.org/) - A headless way to process and distribute data
 - [HBase Indexer](http://ngdata.github.io/hbase-indexer/) - HBase Indexer allows you to easily and quickly index HBase rows into Solr. 
 - [Solr](http://lucene.apache.org/solr/) - Search platform based on Lucene
 - [Banana](https://github.com/lucidworks/banana) - A kibana port for visualisation of Solr data
+- [Flume](https://flume.apache.org/) - A headless way to process and distribute data
 
 The following components will be coming soon:
 
 - [Spark](http://spark.apache.org/) - Data processing engine
 
 ## Getting started
-There are two ways to get started.  If you just want to start all the components just do `docker-compose up`.  You can then go and configure the bits together yourself.
+**Important**: Before you do anything, you need to build the base images.  Please do `docker-compose -f compose.build.yml build`
 
+### Starting everything
+If you just want to start everything, do `docker-compose up -d`.  I believe I've mapped the dependencies correctly in the base docker-compose.yml, so give it a minute and everything should start up. 
+
+### Starting components
+I've tried to break the docker-compose file down into sub sections:
+
+ - HDFS: `docker-compose up namenode datanode1 datanode2`
+ - HBase: `docker-compose up zookeeper regionserver master thrift rest`, requires HDFS
+ - Solr/Lily/Banana: `docker-compose up solr banana lily`, requires HBase
+
+Then you've got the other tools too, so start them by name: `hue`, `nifi`.
+
+### User import demo
 I am working on a complete end to end demo however, so if you prefer, just run `./demo.sh`.  The idea of this demo is to read in random user data from a sample API, import that into HBase, have the indexer then send that over to Solr so we can query it in Banana.
 
 Whichever method you use, give it a minute to get its ducks in line, and then access the key things you'll be interested in:
 
-- Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
-- Solr UI: [http://127.0.0.1:8983](http://127.0.0.1:8983)
-- NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
-- Banana UI: [http://127.0.0.1:8000/src/index.html#/dashboard](http://127.0.0.1:8000)
 - HDFS NameNode UI: [http://127.0.0.1:50070](http://127.0.0.1:50070)
-- Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 - HBase Master UI: [http://127.0.0.1:16010](http://127.0.0.1:16010)
 - HBase Region UI: [http://127.0.0.1:16030](http://127.0.0.1:16030)
+- Hue UI: [http://127.0.0.1:8888](http://127.0.0.1:8888)
+- NiFi UI: [http://127.0.0.1:8082](http://127.0.0.1:8082)
+- Solr UI: [http://127.0.0.1:8983](http://127.0.0.1:8983)
+- Banana UI: [http://127.0.0.1:8000/src/index.html#/dashboard](http://127.0.0.1:8000)
+- Thrift UI: [http://127.0.0.1:9095](http://127.0.0.1:9095)
 
 ## The components in detail
 
@@ -48,9 +61,9 @@ This is a HDFS cluster running two datanodes.  Each of these run in their own co
 
 ### HBase (1.3.0)
 
- - hbase_zookeeper
- - hbase_master
- - hbase_regionserver
+ - zookeeper
+ - master
+ - regionserver
 
 This setup is designed to replicate a fully distributed setup, subsequently we're running in distributed mode and running separate instances (containers) of the following:
 
@@ -58,12 +71,14 @@ The HBase container can be run in standalone mode too, if you want - which will 
 
 You can read more about the modes [here](http://hbase.apache.org/0.94/book/standalone_dist.html).
 
+If you want to visulaise the Zookeeper data, take a look at [zk-web](https://github.com/qiuxiafei/zk-web).  It certainly helped me debugging.
+
 ![HBase](images/HBase.png)
 
 #### Rest/Thrift
 
- - hbase_thrift
- - hbase_rest
+ - thrift
+ - rest
 
 The rest & thrift interfaces sit on top of the cluster, you can stop them if you don't need them.
 
@@ -90,7 +105,7 @@ The only think you actually need to configure is the controller service `HBase_1
 Oh, and create the table in HBase:
 
 ```
-$ docker-compose exec hbase_master hbase shell
+$ docker-compose exec master hbase shell
 HBase Shell; enter 'help<RETURN>' for list of supported commands.
 Type "exit<RETURN>" to leave the HBase Shell
 Version 1.3.0, re359c76e8d9fd0d67396456f92bcbad9ecd7a710, Tue Jan  3 05:31:38 MSK 2017
@@ -106,12 +121,21 @@ After you've done that - start the process flows in NiFi and you'll see data bei
 ![USers](images/users.png)
 
 ### Banana (1.16.12)
+
+ - banana
+
 Banana is a Kibana port for Solr.  It's used to visulaise the data we're indexing.  I haven't done much with it yet other than semi get it running.  
 
 ### HBase Indexer (Lily)
+
+ - lily
+
 HBase Indexer allows you to easily and quickly index HBase rows into Solr.  It links to the HBase replication agent, whenever data is modified in HBase those events are mutated and sent over to the Solr instance.
 
 ### Solr (6.4.1)
+
+ - solr
+
 Search/Index platform based on Lucene.  If you're familiar with the ELK stack, this is the ElasticSearch component.
 
 ### Flume (1.7.0)
@@ -123,7 +147,7 @@ I wanted a GUI-less way to strema data into HBase or HDFS too.  That's what this
 In order for the HBase aspect to work, you need to create the table first, that's easiest via the hbase shell.
 
 ```
-$ docker-compose exec hbase_master hbase shell
+$ docker-compose exec master hbase shell
 HBase Shell; enter 'help<RETURN>' for list of supported commands.
 Type "exit<RETURN>" to leave the HBase Shell
 Version 1.3.0, re359c76e8d9fd0d67396456f92bcbad9ecd7a710, Tue Jan  3 05:31:38 MSK 2017

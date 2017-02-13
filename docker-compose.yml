@@ -1,225 +1,106 @@
 version: '2'
 
 services:
-  # This is a bit of a hacky way to do container build inheritance.
-  # Basically jvm, hadoop and hbase never actually run.
-  # They just return true, but they'll be built first and their image
-  # is used in the other containers Dockerfiles
-
-  jvm:
-    image: karlstoney/jvm
-    container_name: buildonly-jvm
-
-  hadoop:
-    image: karlstoney/hadoop
-    container_name: buildonly-hadoop
-    depends_on:
-      - jvm
-
-  hbase:
-    image: karlstoney/hbase
-    container_name: buildonly-hbase
-    depends_on: 
-      - jvm
-
   # HDFS
   namenode:
-    image: karlstoney/namenode 
-    hostname: namenode
-    container_name: namenode
-    depends_on:
-      - hadoop
-    ports:
-      - 50070:50070
-      - 8020:8020
-    env_file:
-      - ./hadoop.env
-    environment:
-      - CLUSTER_NAME=test
+    extends:
+      file: compose.hdfs.yml
+      service: namenode
 
   datanode1:
-    image: karlstoney/datanode 
-    hostname: datanode1
+    extends:
+      file: compose.hdfs.yml
+      service: datanode
     container_name: datanode1
+    hostname: datanode1
     depends_on:
       - namenode
-      - hadoop
-    env_file:
-      - ./hadoop.env
 
   datanode2:
-    image: karlstoney/datanode 
-    hostname: datanode2
+    extends:
+      file: compose.hdfs.yml
+      service: datanode
     container_name: datanode2
+    hostname: datanode2
     depends_on:
       - namenode
-      - hadoop
-    env_file:
-      - ./hadoop.env
 
   # HBase
-  hbase_zookeeper:
-    image: karlstoney/hbase
-    hostname: hbase-zookeeper
-    container_name: hbase-zookeeper
-    restart: always
-    command: hbase zookeeper start
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-    ports:
-      - 2181:2181
-    depends_on:
-      - hbase
+  zookeeper:
+    extends:
+      file: compose.hbase.yml
+      service: zookeeper
 
-  hbase_master:
-    image: karlstoney/hbase
-    hostname: hbase-master
-    container_name: hbase-master
-    restart: always
-    command: hbase master start
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
-      # docker-compose networking is flakey, I've added a script
-      # which does DNS looking for any HOST_ENTRY_* ENV variables
-      # and adds it to the hostfile for the container, thus bypassing 
-      # the DNS lookup which adds the project network name
-      - HOST_ENTRY_1=hbase-regionserver
-    ports:
-      - 16000:16000
-      - 16010:16010 
+  regionserver:
+    extends:
+      file: compose.hbase.yml
+      service: regionserver
     depends_on:
-      - hbase
-      - hbase_zookeeper
-      - namenode
-      - datanode1
-      - datanode2
-      - hbase_regionserver
-
-  hbase_regionserver:
-    image: karlstoney/hbase
-    hostname: hbase-regionserver
-    container_name: hbase-regionserver
-    restart: always
-    command: hbase regionserver start
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
-    ports:
-      - 16020:16020
-      - 16030:16030 
-    depends_on:
-      - hbase
-      - namenode
       - datanode1
       - datanode2
 
-  hbase_thrift:
-    image: karlstoney/hbase
-    hostname: hbase-thrift
-    container_name: hbase-thrift
-    restart: always
-    command: hbase thrift start -t 5000 -p 9090
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
-    ports:
-      - 9090:9090   # API
-      - 9095:9095   # UI
+  master:
+    extends: 
+      file: compose.hbase.yml
+      service: master
     depends_on:
-      - hbase
-      - hbase_master
+      - zookeeper
+      - regionserver
 
-  hbase_rest:
-    image: karlstoney/hbase
-    hostname: hbase-rest
-    container_name: hbase-rest
-    restart: always
-    command: hbase rest start 
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
-    ports:
-      - 8080:8080   # api
+  thrift:
+    extends: 
+      file: compose.hbase.yml
+      service: thrift
     depends_on:
-      - hbase
-      - hbase_master
+      - master
 
-  lily:
-    image: karlstoney/lily
-    hostname: lily
-    container_name: lily
-    environment:
-      - HBASE_CONF_QUORUM=hbase-zookeeper
-      - HBASE_CONF_ROOTDIR=hdfs://namenode:8020/hbase
-      - INDEX_COLLECTION_users=collection1
-    volumes:
-      - ./config/lily:/data
+  rest:
+    extends: 
+      file: compose.hbase.yml
+      service: rest
     depends_on:
-      - hbase
-      - hbase_master
-      - solr
+      - master
 
+  # The ELK stack, lul
   solr:
-    image: karlstoney/solr
-    hostname: solr
-    container_name: solr
-    ports:
-      - 8983:8983 # UI
+    extends: 
+      file: compose.other.yml
+      service: solr
     depends_on:
-      - jvm
+      - zookeeper
+      - master
 
   banana:
-    image: karlstoney/banana
-    hostname: banana
-    container_name: banana
-    ports:
-      - 8000:8000 # UI
+    extends: 
+      file: compose.other.yml
+      service: banana
     depends_on:
-      - hbase_zookeeper
-      - solr   
+      - solr
 
-  nifi:
-    image: karlstoney/nifi
-    restart: always
-    hostname: nifi
-    container_name: nifi
-    ports:
-      - 8081:8081
-      - 8082:8080 # UI
+  lily:
+    extends: 
+      file: compose.other.yml
+      service: lily
     depends_on:
-      - jvm
-      - hbase_master
-      - hbase_regionserver
-      - hbase_zookeeper   
+      - zookeeper
+      - master
+      - solr
+
+  # Other tools 
+  nifi:
+    extends: 
+      file: compose.other.yml
+      service: nifi
+    depends_on:
+      - master
 
   hue:
-    image: karlstoney/hue
-    hostname: hue
-    container_name: hue
-    restart: always
+    extends: 
+      file: compose.other.yml
+      service: hue
     depends_on:
-      - hbase_master
-      - hbase_regionserver
-      - hbase_thrift
-      - hbase_rest
-      - hbase_zookeeper
-    ports:
-      - 8888:8888
-
-  flume: 
-    image: karlstoney/flume
-    hostname: flume
-    container_name: flume
-    restart: always
-    volumes:
-      - ./config/flume:/opt/flume/conf
-      - ./data/flume:/data
-    environment:
-      - FLUME_AGENT_NAME=agent
-    depends_on:
-      - jvm
-      - namenode
-      - hbase_master
-      - hbase_regionserver
-      - hbase_zookeeper
+      - master
+      - thrift
+      - rest
+      - solr
+      - zookeeper

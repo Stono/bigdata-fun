@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  # Before building any of these containers; please run
+  # docker-compose -f docker-compose.build.yml build
+  # as that will build the base images
+ 
+  # HDFS Starts here...
+  namenode:
+    image: karlstoney/namenode
+    build: ./namenode 
+    hostname: namenode
+    container_name: namenode
+    ports:
+      - 50070:50070
+      - 8020:8020
+    env_file:
+      - ./hadoop.env
+    environment:
+      - CLUSTER_NAME=test
+
+  datanode:
+    image: karlstoney/datanode 
+    build: ./datanode
+    hostname: datanode
+    container_name: datanode
+    env_file:
+      - ./hadoop.env

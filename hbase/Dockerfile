@@ -30,7 +30,8 @@ RUN cd /tmp && \
     cd hbase-indexer-master && \ 
     mvn clean package -Pdist -DskipTests && \
     tar xzf hbase-indexer-dist/target/hbase-indexer-*.tar.gz -C /opt/ && \
-    mv /opt/hbase-indexer-* /opt/hbase-indexer
+    mv /opt/hbase-indexer-* /opt/hbase-indexer && \
+    rm -rf /tmp/hbase-indexer*
 
 # Copy lily libs to hbase
 RUN cp -f $INDEXER_HOME/lib/hbase-sep-* $HBASE_HOME/lib
