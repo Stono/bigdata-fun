@@ -85,3 +85,14 @@ services:
       - ./data/flume:/data
     environment:
       - FLUME_AGENT_NAME=agent
+
+  zkweb: 
+    image: karlstoney/zkweb
+    build: ./zkweb
+    hostname: zkweb
+    container_name: zkweb
+    restart: always
+    ports:
+      - 17010:8080 # UI
+    volumes:
+      - ./config/zkweb:/opt/zk-web/conf

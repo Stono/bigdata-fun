@@ -13,6 +13,7 @@ The key components currently implemented are:
 - [Solr](http://lucene.apache.org/solr/) - Search platform based on Lucene
 - [Banana](https://github.com/lucidworks/banana) - A kibana port for visualisation of Solr data
 - [Flume](https://flume.apache.org/) - A headless way to process and distribute data
+- [ZkWeb](https://github.com/qiuxiafei/zk-web) - For viewing your ZooKeeper data in a UI
 
 The following components will be coming soon:
 
@@ -40,6 +41,7 @@ Once you've used one of the start up options below, these are your key URLs:
 - NiFi UI: [http://127.0.0.1:17007](http://127.0.0.1:17007)
 - Solr UI: [http://127.0.0.1:17008](http://127.0.0.1:17008)
 - Banana UI: [http://127.0.0.1:17009](http://127.0.0.1:17009/src/index.html#/dashboard)
+- ZooKeeper Web UI: [http://127.0.0.1:17010](http://127.0.0.1:17010)
 
 ### Startup Options
 
@@ -86,6 +88,12 @@ You can read more about the modes [here](http://hbase.apache.org/0.94/book/stand
 If you want to visulaise the Zookeeper data, take a look at [zk-web](https://github.com/qiuxiafei/zk-web).  It certainly helped me debugging.
 
 ![HBase](images/HBase.png)
+
+### Zk-Web 
+
+ - zkweb
+
+This is a web interface for managing ZooKeeper.  I found it helps me with my debugging.  To run it do `docker-compose up -d zkweb`, and then go to the URL (referenced above).  You'll need to enter the ZooKeeper cluster address, but it's from the perspective of the docker container so that is `hbase-zookeeper:2181`.
 
 #### Rest/Thrift
 

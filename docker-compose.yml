@@ -115,3 +115,10 @@ services:
       - rest
       - solr
       - zookeeper
+
+  zkweb:
+    extends: 
+      file: compose.other.yml
+      service: zkweb
+    depends_on:
+      - zookeeper
